@@ -1,61 +1,75 @@
-import copy
+import copy, random
 
 def Make_Move(ai_board_state):
     move_to_make = []
+    possible_moves = Count_Empty_Spaces(ai_board_state)
+    if not (possible_moves):
+        return ()
+
     if (ai_board_state[1][1] == 0): #Center is open, go there
         move_to_make =  (1, 1)
 
-    possible_moves = Count_Empty_Spaces(ai_board_state)
-    for check_win in possible_moves:
-        test_board = copy.deepcopy(ai_board_state)
-        test_board[check_win[0]][check_win[1]] = 'O'
-        simulatedgame_state = check_for_winner(test_board)
-        if (simulatedgame_state[0] == True): #AI can win this move, go there
-            move_to_make = check_win
-            break
-        else:
-            test_board[check_win[0]][check_win[1]] = 'X'
-            simulatedgame_state = check_for_winner(test_board)
-            if (simulatedgame_state[0] == True): #Player will win next move, block there
-                move_to_make = check_win
-                break
-
-    if not (move_to_make):
-        best_move = [(),-10000]
+    if len(possible_moves) == 2:
         for check_win in possible_moves:
             test_board = copy.deepcopy(ai_board_state)
             test_board[check_win[0]][check_win[1]] = 'O'
-            score = minimax(test_board, 6, 1, 0)
-            if (score > best_move[1]):
-                best_move = [check_win,score]
-        move_to_make = best_move[0]
+            simulatedgame_state = check_for_winner(test_board)
+            if (simulatedgame_state[0] == True): #AI can win this move, go there
+                move_to_make = check_win
+                break
+            else:
+                test_board[check_win[0]][check_win[1]] = 'X'
+                simulatedgame_state = check_for_winner(test_board)
+                if (simulatedgame_state[0] == True): #Player will win next move, block there
+                    move_to_make = check_win
+                    break
+
+    if not (move_to_make):
+        moves_and_scores = []
+        best_score = 10001
+        for check_win in possible_moves:
+            test_board = copy.deepcopy(ai_board_state)
+            test_board[check_win[0]][check_win[1]] = 'O'
+            score = minimax(test_board, 10, 2, 1)
+            if (score < best_score):
+                best_score = score
+            moves_and_scores.append([check_win,score])
+
+        move_choices = []
+        index = 0
+        for move in moves_and_scores:
+            if (move[1] == best_score):
+                move_choices.append(index)
+            index += 1
+
+        move_to_make = moves_and_scores[random.choice(move_choices)][0]
 
     return move_to_make
 
 def minimax(board_state, depth, player, moves_taken):
     simulatedgame_state = check_for_winner(board_state)
     possible_moves = Count_Empty_Spaces(board_state)
-    if (depth == 0 or simulatedgame_state[0] == True):
+    if (depth == 0 or simulatedgame_state[0] == True or not possible_moves):
         if not (possible_moves):
             return 0
-        return (10 if player == 2 else -10) / moves_taken
+        return (10 if player == 1 else -10) / moves_taken
 
     if (player == 2):
-        max_eval = -10000
-        for possible_move in possible_moves:
-            test_board = copy.deepcopy(board_state)
-            test_board[possible_move[0]][possible_move[1]] = 'O'
-            eval = minimax(test_board, depth - 1, 1, moves_taken + 1)
-            max_eval = max(max_eval, eval)
-        return max_eval
-    else:
-        min_eval = 10000
+        value = -10000
         for possible_move in possible_moves:
             test_board = copy.deepcopy(board_state)
             test_board[possible_move[0]][possible_move[1]] = 'X'
+            eval = minimax(test_board, depth - 1, 1, moves_taken + 1)
+            value = max([value, eval])
+        return value
+    else:
+        value = 10000
+        for possible_move in possible_moves:
+            test_board = copy.deepcopy(board_state)
+            test_board[possible_move[0]][possible_move[1]] = 'O'
             eval = minimax(test_board, depth - 1, 2, moves_taken + 1)
-            min_eval = max(min_eval, eval)
-        return min_eval
+            value = min([value, eval])
+        return value
 
 def Count_Empty_Spaces(board_state):
     possible_moves = []
