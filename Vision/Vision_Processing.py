@@ -1,12 +1,11 @@
-import math
-
-import cv2, time
+import cv2, time, math, sys
 import numpy as np
-from EE415_TicTacToe.AI import tictac_AI as AI
+sys.path.append("..")
+from AI import tictac_AI as AI
 
 video_stream = cv2.VideoCapture(0)
 
-def main():
+def __main__():
     scale = 360
     offset = scale / 4
     spaces_old = [
@@ -34,7 +33,7 @@ def main():
         frame = cv2.flip(cropped,0)
         frame = cv2.flip(frame, 1)
 
-        # BGR
+        #                     B   G   R
         lower_red = np.array([16, 11, 106])
         upper_red = np.array([123, 118, 248])
 
@@ -128,5 +127,5 @@ def who_went_last(new, old):
                 return new[row][col]
     return ""
 
-main()
+__main__()
 cv2.destroyAllWindows()
