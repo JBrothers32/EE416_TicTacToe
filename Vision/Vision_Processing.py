@@ -5,7 +5,7 @@ from AI import tictac_AI as AI
 
 video_stream = cv2.VideoCapture(0)
 
-def __main__():
+def GameVision():
     scale = 360
     offset = scale / 4
     spaces_old = [
@@ -73,6 +73,7 @@ def __main__():
         cv2.imshow('combined', combined)
 
         if cv2.waitKey(1) == ord('q'):
+            CloseAll()
             break
         if (time.time() - start_time < .03):
             time.sleep(time.time() - start_time - .001)
@@ -127,5 +128,6 @@ def who_went_last(new, old):
                 return new[row][col]
     return ""
 
-__main__()
-cv2.destroyAllWindows()
+# GameVision()
+def CloseAll():
+    cv2.destroyAllWindows()
