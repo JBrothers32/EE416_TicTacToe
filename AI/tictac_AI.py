@@ -26,12 +26,12 @@ def Make_Move(ai_board_state):
 
     if not (move_to_make):
         moves_and_scores = []
-        best_score = 10001
+        best_score = -10001
         for check_win in possible_moves:
             test_board = copy.deepcopy(ai_board_state)
             test_board[check_win[0]][check_win[1]] = 'O'
-            score = minimax(test_board, 10, 2, 1)
-            if (score < best_score):
+            score = -minimax(test_board, 10, 2, 1)
+            if (score > best_score):
                 best_score = score
             moves_and_scores.append([check_win,score])
 

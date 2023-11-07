@@ -59,12 +59,16 @@ def GameVision():
             if change_stabilize >= 40:
                 board_change = False
                 if (spaces_valid != spaces_old):
-                    last_played = who_went_last(spaces_old, spaces_valid)
-                    spaces_valid = spaces_old
-                    if (play_AI(spaces_valid, last_played)):
-                        return
-                    elif (last_played == ''):
-                        return
+                    valid, pos_played, last_played = who_went_last(spaces_old, spaces_valid)
+                    if (valid):
+                        spaces_valid = spaces_old
+                        if (play_AI(spaces_valid, last_played)):
+                            return
+                        elif (last_played == ''):
+                            return
+                    else:
+                        print("Illegal")
+                        print(pos_played)
                 # print(spaces_valid)
 
         cv2.imshow('Frame', img_overlay)
@@ -96,6 +100,7 @@ def calc_spaces(imgs, x, y, offset, frame):
                 center_check = cv2.countNonZero((imgs[img_index])[int(y_off - 15):int(y_off + 15),
                                                                   int(x_off - 15):int(x_off + 15)])
                 if (center_check > 160):
+                    #Provides color-coded overlay ontop of captured frame (debug only)
                     frame[int(y_off - 15):int(y_off + 15), int(x_off - 15):int(x_off + 15)] = (0,
                                                                                                255 if img_index == 1 else 0,
                                                                                                255 if img_index == 0 else 0)
@@ -122,12 +127,20 @@ def play_AI(board, player):
     return False
 
 def who_went_last(new, old):
+    last_played = ""
+    pos_played = []
+    valid = True
     for row in range(0,3):
         for col in range(0,3):
             if (new[row][col] != old[row][col]):
-                return new[row][col]
-    return ""
+                pos_played.append((row,col))
+                if (last_played == ""):
+                    last_played = new[row][col]
+                if (old[row][col] != 0):
+                    valid = False
+    if (valid and len(pos_played) > 1):
+        valid = False
+    return valid, pos_played, last_played
 
-# GameVision()
 def CloseAll():
     cv2.destroyAllWindows()
