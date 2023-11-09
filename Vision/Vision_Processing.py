@@ -5,7 +5,7 @@ from AI import tictac_AI as AI
 
 video_stream = cv2.VideoCapture(0)
 
-def GameVision():
+def GameVision(q):
     scale = 360
     offset = scale / 4
     spaces_old = [
@@ -62,10 +62,15 @@ def GameVision():
                     valid, pos_played, last_played = who_went_last(spaces_old, spaces_valid)
                     if (valid):
                         spaces_valid = spaces_old
-                        if (play_AI(spaces_valid, last_played)):
+                        play_pos, play_val = play_AI(spaces_valid, last_played)
+                        if not (play_val):
                             return
                         elif (last_played == ''):
                             return
+                        elif (play_pos):
+                            hi = 2
+                            #This will put the play pos into a mp que
+
                     else:
                         print("Illegal")
                         print(pos_played)
@@ -114,17 +119,17 @@ def play_AI(board, player):
     game_status = AI.check_for_winner(board)
     if (game_status[0]):
         print(game_status)
-        return True
+        return False
 
     if (player == 'X'):
         ai_move = AI.Make_Move(board)
         if (ai_move):
             print(ai_move)
-            return False
+            return True
         else:
             print("DRAW")
-            return True
-    return False
+            return False
+    return ai_move, True
 
 def who_went_last(new, old):
     last_played = ""

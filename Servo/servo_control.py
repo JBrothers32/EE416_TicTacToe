@@ -2,7 +2,7 @@ import Arm_Lib as arm
 import time, math
 
 pos_list = {
-    "00" : [0,45,90,90,90],
+    "00" : [81,36,60,15,89],
     "01" : [25,90,45,90,90],
     "02" : [50,90,90,45,90],
     "10" : [75,90,90,90,45],
@@ -41,18 +41,18 @@ def WaitToTarget(target, servo_id):
     return
 
 def main():
-    target = ClawControl(True)
-    print("Target: " + str(target))
-    WaitToTarget(target,6)
-    # for pos in pos_list.keys():
-    #     MoveTo(pos)
-    #     time.sleep(1)
-    print(Arm.Arm_serial_servo_read(6))
-    target = ClawControl(False)
-    print("Target: " + str(target))
-    WaitToTarget(target,6)
-    print(Arm.Arm_serial_servo_read(6))
+    MoveTo("00")
+    # target = ClawControl(True)
+    # print("Target: " + str(target))
+    # WaitToTarget(target,6)
+    # # for pos in pos_list.keys():
+    # #     MoveTo(pos)
+    # #     time.sleep(1)
+    # print(Arm.Arm_serial_servo_read(6))
+    # target = ClawControl(False)
+    # print("Target: " + str(target))
+    # WaitToTarget(target,6)
+    # print(Arm.Arm_serial_servo_read(6))
     return
 
-for test in range(10):
-    main()
+main()
