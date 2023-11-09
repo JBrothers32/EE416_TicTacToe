@@ -1,7 +1,11 @@
+import random
+
 import cv2, time, math, sys
 import numpy as np
 sys.path.append("..")
 from AI import tictac_AI as AI
+
+import time
 
 video_stream = cv2.VideoCapture(0)
 
@@ -64,17 +68,16 @@ def GameVision(q):
                         spaces_valid = spaces_old
                         play_pos, play_val = play_AI(spaces_valid, last_played)
                         if not (play_val):
-                            return
+                            q.put(play_pos)
                         elif (last_played == ''):
-                            return
+                            q.put(None)
                         elif (play_pos):
-                            hi = 2
                             #This will put the play pos into a mp que
+                            q.put(play_pos)
 
                     else:
                         print("Illegal")
                         print(pos_played)
-                # print(spaces_valid)
 
         cv2.imshow('Frame', img_overlay)
         cv2.imshow('mask_red', morph_red)
@@ -84,6 +87,8 @@ def GameVision(q):
         if cv2.waitKey(1) == ord('q'):
             CloseAll()
             break
+
+        #This maintains the video at 30 fps if it tries to go faster, though it may go slower
         if (time.time() - start_time < .03):
             time.sleep(time.time() - start_time - .001)
 
@@ -119,16 +124,16 @@ def play_AI(board, player):
     game_status = AI.check_for_winner(board)
     if (game_status[0]):
         print(game_status)
-        return False
+        return game_status[1], False
 
     if (player == 'X'):
         ai_move = AI.Make_Move(board)
         if (ai_move):
             print(ai_move)
-            return True
+            return ai_move, True
         else:
             print("DRAW")
-            return False
+            return (), False
     return ai_move, True
 
 def who_went_last(new, old):
