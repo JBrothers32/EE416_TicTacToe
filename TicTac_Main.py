@@ -14,14 +14,15 @@ def main():
     while(True):
         vp_data = vp_que.get()
         if (vp_data):
-            if (len(vp_data == 3)):
+            if (len(vp_data) == 2):
                 # Here the vp process has given pos list of winner, meaning game has finished
                 # invoke the board LED controls to light up the winner
-                print(vp_data)
-            elif (len(vp_data == 1)):
+                print("Winner: " + vp_data[0] + str(vp_data[1]))
+                break
+            elif (len(vp_data) == 1):
                 #Here the vp process has given a position
                 #invoke the arm to retrive a game piece and place it in that position
-                print(vp_data)
+                print("Go to: " + str(vp_data))
             else:
                 print("Error")
         else:
@@ -29,6 +30,7 @@ def main():
             print("Done")
             break
     vp_proc.terminate()
+    vp_proc.join()
 
 if __name__ == '__main__':
     main()

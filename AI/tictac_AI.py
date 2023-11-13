@@ -7,7 +7,7 @@ def Make_Move(ai_board_state):
         return ()
 
     if (ai_board_state[1][1] == 0): #Center is open, go there
-        move_to_make =  (1, 1)
+        move_to_make = (1, 1)
 
     if len(possible_moves) == 2:
         for check_win in possible_moves:
@@ -90,22 +90,23 @@ def check_for_winner(board_state):
         diag[0].append(row[0 + iter])
         diag[1].append(row[2 - iter])
         if (isOver(row) == True):
-            return [True, row[0]]
+            return [True, row[0], [(iter,0),(iter,1),(iter,2)]]
 
         check_col = []
         for row_num in range(0,3):
             check_col.append(board_state[row_num][iter])
         if (isOver(check_col) == True):
-            return [True, check_col[0]]
+            return [True, check_col[0], [(0,iter),(1,iter),(2,iter)]]
         iter += 1
 
     for diag_check in diag:
         if (isOver(diag_check) == True):
-            return [True, diag_check[0]]
+            chain = [(0,0),(1,1),(2,2)] if diag_check == diag[0] else [(0,2),(1,1),(2,0)]
+            return [True, diag_check[0], chain]
 
-    return [False, ""]
+    return [False, "", []]
 
 def isOver(row_data):
     if (row_data == [0, 0, 0]):
-        return -1
+        return False
     return all(x == row_data[0] for x in row_data)

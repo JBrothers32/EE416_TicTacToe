@@ -66,14 +66,15 @@ def GameVision(q):
                     valid, pos_played, last_played = who_went_last(spaces_old, spaces_valid)
                     if (valid):
                         spaces_valid = spaces_old
-                        play_pos, play_val = play_AI(spaces_valid, last_played)
-                        if not (play_val):
-                            q.put(play_pos)
-                        elif (last_played == ''):
-                            q.put(None)
-                        elif (play_pos):
-                            #This will put the play pos into a mp que
-                            q.put(play_pos)
+                        play_pos, game_winner, winning_chain = play_AI(spaces_valid, last_played)
+                        #This will put the play pos into a mp que
+                        if (winning_chain):
+                            q.put([last_played, winning_chain])
+                        else:
+                            if (last_played == ''):
+                                q.put(None)
+                            elif (last_played == 'X'):
+                                q.put([play_pos])
 
                     else:
                         print("Illegal")
@@ -123,18 +124,16 @@ def calc_spaces(imgs, x, y, offset, frame):
 def play_AI(board, player):
     game_status = AI.check_for_winner(board)
     if (game_status[0]):
-        print(game_status)
-        return game_status[1], False
+        return game_status[1], game_status[0], game_status[2]
 
     if (player == 'X'):
         ai_move = AI.Make_Move(board)
         if (ai_move):
-            print(ai_move)
-            return ai_move, True
+            return ai_move, game_status[0], game_status[2]
         else:
             print("DRAW")
-            return (), False
-    return ai_move, True
+            return (), game_status[0], game_status[2]
+    return (), game_status[0], game_status[2]
 
 def who_went_last(new, old):
     last_played = ""
