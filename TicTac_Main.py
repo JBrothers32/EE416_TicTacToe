@@ -1,4 +1,5 @@
 from Vision import Vision_Processing as VP
+from Servo import servo_control as sc
 import multiprocessing as mp
 
 def main():
@@ -23,6 +24,7 @@ def main():
                 #Here the vp process has given a position
                 #invoke the arm to retrive a game piece and place it in that position
                 print("Go to: " + str(vp_data))
+                sc.GrabSequence(vp_data[0])
             else:
                 print("Error")
         else:

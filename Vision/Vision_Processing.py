@@ -10,7 +10,8 @@ import time
 video_stream = cv2.VideoCapture(0)
 
 def GameVision(q):
-    scale = 360
+    # scale = 360
+    scale = 2000
     offset = scale / 4
     spaces_old = [
         [0, 0, 0],
@@ -81,9 +82,9 @@ def GameVision(q):
                         print(pos_played)
 
         cv2.imshow('Frame', img_overlay)
-        cv2.imshow('mask_red', morph_red)
-        cv2.imshow('mask_green', morph_green)
-        cv2.imshow('combined', combined)
+        # cv2.imshow('mask_red', morph_red)
+        # cv2.imshow('mask_green', morph_green)
+        # cv2.imshow('combined', combined)
 
         if cv2.waitKey(1) == ord('q'):
             CloseAll()
@@ -106,8 +107,10 @@ def calc_spaces(imgs, x, y, offset, frame):
             break
         for row in range(0,3):
             for col in range(0,3):
-                y_off = (0 if col == 0 else ((-1)**col * offset)) + y
-                x_off = (0 if row == 0 else ((-1)**row * offset)) + x
+                # y_off = (0 if col == 0 else ((-1)**col * offset)) + y
+                # x_off = (0 if row == 0 else ((-1)**row * offset)) + x
+                y_off = (0 if col == 0 else ((-1)**col * 100)) + y
+                x_off = (0 if row == 0 else ((-1)**row * 100)) + x
                 center_check = cv2.countNonZero((imgs[img_index])[int(y_off - 15):int(y_off + 15),
                                                                   int(x_off - 15):int(x_off + 15)])
                 if (center_check > 160):
@@ -117,6 +120,10 @@ def calc_spaces(imgs, x, y, offset, frame):
                                                                                                255 if img_index == 0 else 0)
                     spaces_all[1 if col == 0 else (-1)**col + 1][1 if row == 0 else (-1)**row + 1] = \
                             'X' if img_index == 0 else 'O'
+                else:
+                    frame[int(y_off - 15):int(y_off + 15), int(x_off - 15):int(x_off + 15)] = (0,
+                                                                                               0,
+                                                                                               0)
         img_index += 1
 
     return spaces_all, frame
