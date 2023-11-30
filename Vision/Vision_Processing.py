@@ -7,12 +7,11 @@ from AI import tictac_AI as AI
 
 import time
 
-video_stream = cv2.VideoCapture(0)
-
 def GameVision(q):
+    video_stream = cv2.VideoCapture(0)
     # scale = 360
     scale = 2000
-    offset = scale / 4
+    offset = scale / 16
     spaces_old = [
         [0, 0, 0],
         [0, 0, 0],
@@ -32,11 +31,15 @@ def GameVision(q):
         x = center[1]/2 - scale/2
         y = center[0]/2 - scale/2
         cropped = frame[int(y):int(y+scale),int(x):int(x+scale)]
-        center = cropped.shape
+        # center = cropped.shape
+        # x = center[1] / 2
+        # y = center[0] / 2
+        # frame = cv2.flip(cropped,0)
+        # frame = cv2.flip(cropped, 1)
+        frame = cv2.rotate(cropped, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        center = frame.shape
         x = center[1] / 2
         y = center[0] / 2
-        frame = cv2.flip(cropped,0)
-        frame = cv2.flip(frame, 1)
 
         #                     B   G   R
         lower_red = np.array([16, 11, 106])
@@ -67,6 +70,7 @@ def GameVision(q):
                     valid, pos_played, last_played = who_went_last(spaces_old, spaces_valid)
                     if (valid):
                         spaces_valid = spaces_old
+                        # print(spaces_valid)
                         play_pos, game_winner, winning_chain = play_AI(spaces_valid, last_played)
                         #This will put the play pos into a mp que
                         if (winning_chain):
@@ -107,23 +111,21 @@ def calc_spaces(imgs, x, y, offset, frame):
             break
         for row in range(0,3):
             for col in range(0,3):
-                # y_off = (0 if col == 0 else ((-1)**col * offset)) + y
-                # x_off = (0 if row == 0 else ((-1)**row * offset)) + x
-                y_off = (0 if col == 0 else ((-1)**col * 100)) + y
-                x_off = (0 if row == 0 else ((-1)**row * 100)) + x
-                center_check = cv2.countNonZero((imgs[img_index])[int(y_off - 15):int(y_off + 15),
-                                                                  int(x_off - 15):int(x_off + 15)])
-                if (center_check > 160):
+                y_off = (0 if col == 0 else ((-1)**col * offset)) + y
+                x_off = (0 if row == 0 else ((-1)**row * offset)) + x
+                # y_off = (0 if col == 0 else ((-1)**col * 200)) + y
+                # x_off = (0 if row == 0 else ((-1)**row * 200)) + x
+                center_check = cv2.countNonZero((imgs[img_index])[int(y_off - 40):int(y_off + 40),
+                                                                  int(x_off - 40):int(x_off + 40)])
+                if (center_check > 1000):
                     #Provides color-coded overlay ontop of captured frame (debug only)
-                    frame[int(y_off - 15):int(y_off + 15), int(x_off - 15):int(x_off + 15)] = (0,
+                    frame[int(y_off - 40):int(y_off + 40), int(x_off - 40):int(x_off + 40)] = (0,
                                                                                                255 if img_index == 1 else 0,
                                                                                                255 if img_index == 0 else 0)
                     spaces_all[1 if col == 0 else (-1)**col + 1][1 if row == 0 else (-1)**row + 1] = \
                             'X' if img_index == 0 else 'O'
-                else:
-                    frame[int(y_off - 15):int(y_off + 15), int(x_off - 15):int(x_off + 15)] = (0,
-                                                                                               0,
-                                                                                               0)
+                # else:
+                #     frame[int(y_off - 40):int(y_off + 40), int(x_off - 40):int(x_off + 40)] = (0,0,0)
         img_index += 1
 
     return spaces_all, frame

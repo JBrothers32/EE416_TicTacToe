@@ -9,6 +9,9 @@ def main():
     vp_proc = mp.Process(target=VP.GameVision, args=(vp_que,))
     vp_proc.start()
 
+
+    sc.WaitForArm(sc.MoveTo("idle"))
+
     #Whenever the vision process has added a location to the que
     #tell the arm to go to that position
     #if the vision doesn't have a pos, end state or illegal move do something else
@@ -23,8 +26,11 @@ def main():
             elif (len(vp_data) == 1):
                 #Here the vp process has given a position
                 #invoke the arm to retrive a game piece and place it in that position
-                print("Go to: " + str(vp_data))
-                sc.GrabSequence(vp_data[0])
+                if (vp_data[0]):
+                    print("Go to: " + str(vp_data))
+                    sc.GrabSequence(vp_data[0])
+                else:
+                    break
             else:
                 print("Error")
         else:
@@ -35,5 +41,11 @@ def main():
     vp_proc.join()
 
 if __name__ == '__main__':
-    main()
+    playing = True
+    while(playing): 
+        main()
+        keep_playing = input("Keep playing?(y/n)")
+        if (keep_playing == "n"):
+            playing = False
+            break
 

@@ -9,20 +9,22 @@ def Make_Move(ai_board_state):
     if (ai_board_state[1][1] == 0): #Center is open, go there
         move_to_make = (1, 1)
 
-    if len(possible_moves) == 2:
-        for check_win in possible_moves:
-            test_board = copy.deepcopy(ai_board_state)
-            test_board[check_win[0]][check_win[1]] = 'O'
+    # if len(possible_moves) == 2:
+    for check_win in possible_moves:
+        test_board = copy.deepcopy(ai_board_state)
+        test_board[check_win[0]][check_win[1]] = 'O'
+        simulatedgame_state = check_for_winner(test_board)
+        if (simulatedgame_state[0] == True): #AI can win this move, go there
+            move_to_make = check_win
+            # break
+            return move_to_make
+        else:
+            test_board[check_win[0]][check_win[1]] = 'X'
             simulatedgame_state = check_for_winner(test_board)
-            if (simulatedgame_state[0] == True): #AI can win this move, go there
+            if (simulatedgame_state[0] == True): #Player will win next move, block there
                 move_to_make = check_win
-                break
-            else:
-                test_board[check_win[0]][check_win[1]] = 'X'
-                simulatedgame_state = check_for_winner(test_board)
-                if (simulatedgame_state[0] == True): #Player will win next move, block there
-                    move_to_make = check_win
-                    break
+                # break
+                return move_to_make
 
     if not (move_to_make):
         moves_and_scores = []
