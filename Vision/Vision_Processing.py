@@ -10,8 +10,8 @@ import time
 def GameVision(q):
     video_stream = cv2.VideoCapture(0)
     # scale = 360
-    scale = 2000
-    offset = scale / 16
+    scale = 2400
+    offset = scale / 14
     spaces_old = [
         [0, 0, 0],
         [0, 0, 0],
@@ -43,10 +43,16 @@ def GameVision(q):
 
         #                     B   G   R
         lower_red = np.array([16, 11, 106])
-        upper_red = np.array([123, 118, 248])
+        upper_red = np.array([123, 80, 255])
 
-        lower_green = np.array([19, 64, 32])
-        upper_green = np.array([148, 182, 158])
+        lower_green = np.array([19, 50, 32])
+        upper_green = np.array([148, 255, 100])
+
+        # lower_red = np.array([38, 35, 130])
+        # upper_red = np.array([46, 45, 162])
+
+        # lower_green = np.array([60, 50, 60])
+        # upper_green = np.array([80, 90, 70])
 
         mask_red = cv2.inRange(frame, lower_red, upper_red)
         mask_green = cv2.inRange(frame, lower_green, upper_green)
