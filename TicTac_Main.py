@@ -24,7 +24,6 @@ def main():
                 #Here the vp process has given a position
                 #invoke the arm to retrive a game piece and place it in that position
                 if (vp_data[0]):
-                    # print("Go to: " + str(vp_data))
                     sc.GrabSequence(vp_data[0])
                 else:
                     break
@@ -47,8 +46,4 @@ if __name__ == '__main__':
         if (keep_playing == "n"):
             playing = False
             break
-# sc.ClawControl(False)
-# sc.MoveTo("retrive")
-# sc.ClawControl(True)
-# sc.Arm.Arm_serial_servo_write(2, 75, 750)
 

@@ -1,5 +1,5 @@
 import Arm_Lib as arm
-import time, math, datetime
+import time
 
 pos_list = {
     "00" : [98,49,51,25,90],
@@ -33,11 +33,9 @@ def ClawControl(open):
     return goto
 
 def WaitToTarget(target, servo_id, timeout=False):
-    # cur_agl = Arm.Arm_serial_servo_read(servo_id)
     cur_agl = None
     while (cur_agl == None):
         cur_agl = Arm.Arm_serial_servo_read(servo_id)
-    # print("Cur: " + str(cur_agl))
     timeout_start = time.time()
     last_time = time.time()
     while (abs(target - cur_agl) > 3):
@@ -48,7 +46,6 @@ def WaitToTarget(target, servo_id, timeout=False):
         while (cur_agl == None):
             cur_agl = Arm.Arm_serial_servo_read(servo_id)
         last_time = time.time()
-        # print("Cur: " + str(cur_agl))
     return
 
 def WaitForArm(target_pos):
@@ -71,8 +68,3 @@ def main():
             time.sleep(3)
             GrabSequence("".join([str(row),str(col)]))
     return
-
-# main()
-# GrabSequence("11")
-# WaitToTarget(ClawControl(False), 6)
-# WaitForArm(MoveTo("22"))

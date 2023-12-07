@@ -1,6 +1,4 @@
-import random
-
-import cv2, time, math, sys
+import cv2, time, sys
 import numpy as np
 from pathlib import Path
 sys.path.append("..")
@@ -10,7 +8,6 @@ import time
 
 def GameVision(q):
     video_stream = cv2.VideoCapture(1)
-    # scale = 360
     scale = 2400
     offset = scale / 14
     spaces_old = [
@@ -32,11 +29,6 @@ def GameVision(q):
         x = center[1]/2 - scale/2
         y = center[0]/2 - scale/2
         cropped = frame[int(y):int(y+scale),int(x):int(x+scale)]
-        # center = cropped.shape
-        # x = center[1] / 2
-        # y = center[0] / 2
-        # frame = cv2.flip(cropped,0)
-        # frame = cv2.flip(cropped, 1)
         frame = cv2.rotate(cropped, cv2.ROTATE_90_COUNTERCLOCKWISE)
         center = frame.shape
         x = center[1] / 2
@@ -48,12 +40,6 @@ def GameVision(q):
 
         lower_green = np.array([19, 50, 32])
         upper_green = np.array([148, 255, 100])
-
-        # lower_red = np.array([38, 35, 130])
-        # upper_red = np.array([46, 45, 162])
-
-        # lower_green = np.array([60, 50, 60])
-        # upper_green = np.array([80, 90, 70])
 
         mask_red = cv2.inRange(frame, lower_red, upper_red)
         mask_green = cv2.inRange(frame, lower_green, upper_green)
@@ -77,7 +63,6 @@ def GameVision(q):
                     valid, pos_played, last_played = who_went_last(spaces_old, spaces_valid)
                     if (valid):
                         spaces_valid = spaces_old
-                        # print(spaces_valid)
                         play_pos, game_winner, winning_chain = play_AI(spaces_valid, last_played)
                         #This will put the play pos into a mp que
                         if (winning_chain):
@@ -93,9 +78,6 @@ def GameVision(q):
                         print(pos_played)
 
         cv2.imshow('Frame', img_overlay)
-        # cv2.imshow('mask_red', morph_red)
-        # cv2.imshow('mask_green', morph_green)
-        # cv2.imshow('combined', combined)
 
         if cv2.waitKey(1) == ord('q'):
             CloseAll()
@@ -120,8 +102,6 @@ def calc_spaces(imgs, x, y, offset, frame):
             for col in range(0,3):
                 y_off = (0 if col == 0 else ((-1)**col * offset)) + y
                 x_off = (0 if row == 0 else ((-1)**row * offset)) + x
-                # y_off = (0 if col == 0 else ((-1)**col * 200)) + y
-                # x_off = (0 if row == 0 else ((-1)**row * 200)) + x
                 center_check = cv2.countNonZero((imgs[img_index])[int(y_off - 40):int(y_off + 40),
                                                                   int(x_off - 40):int(x_off + 40)])
                 if (center_check > 1000):
@@ -131,6 +111,7 @@ def calc_spaces(imgs, x, y, offset, frame):
                                                                                                255 if img_index == 0 else 0)
                     spaces_all[1 if col == 0 else (-1)**col + 1][1 if row == 0 else (-1)**row + 1] = \
                             'X' if img_index == 0 else 'O'
+                #--Debug grid for camera alignment
                 # else:
                 #     frame[int(y_off - 40):int(y_off + 40), int(x_off - 40):int(x_off + 40)] = (0,0,0)
         img_index += 1
