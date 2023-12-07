@@ -2,13 +2,14 @@ import random
 
 import cv2, time, math, sys
 import numpy as np
+from pathlib import Path
 sys.path.append("..")
 from AI import tictac_AI as AI
 
 import time
 
 def GameVision(q):
-    video_stream = cv2.VideoCapture(0)
+    video_stream = cv2.VideoCapture(1)
     # scale = 360
     scale = 2400
     offset = scale / 14
@@ -42,7 +43,7 @@ def GameVision(q):
         y = center[0] / 2
 
         #                     B   G   R
-        lower_red = np.array([16, 11, 106])
+        lower_red = np.array([16, 11, 70])
         upper_red = np.array([123, 80, 255])
 
         lower_green = np.array([19, 50, 32])

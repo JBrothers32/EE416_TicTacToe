@@ -48,5 +48,7 @@ if __name__ == '__main__':
             playing = False
             break
 # sc.ClawControl(False)
-# sc.MoveTo("12")
+# sc.MoveTo("retrive")
+# sc.ClawControl(True)
+# sc.Arm.Arm_serial_servo_write(2, 75, 750)
 
