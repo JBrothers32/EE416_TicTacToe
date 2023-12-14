@@ -1,9 +1,3 @@
-from rpi_hardware_pwm import HardwarePWM
+To run on the Yahboom DOFBOT-PI, call the Python script TicTac_Main.py.
 
-pwm = HardwarePWM(pwm_channel=0, hz=60)
-pwm.start(100) # full duty cycle
-
-pwm.change_duty_cycle(50)
-pwm.change_frequency(25_000)
-
-pwm.stop()
+TicTac_Main.py is the entry point into the program and handles the spawning and destruction of Vision processes per game played.
